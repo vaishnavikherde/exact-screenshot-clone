@@ -124,7 +124,7 @@ export function recipeItems(recipe: Recipe, servesMultiplier = 1): AIItem[] {
       const product = resolve(term);
       return product ? { product, qty: Math.max(1, Math.round(qty * servesMultiplier)) } : null;
     })
-    .filter((p): p is Product => Boolean(p)) as AIItem[];
+    .filter(Boolean) as AIItem[];
 }
 
 const numberFrom = (text: string, fallback: number) => {
@@ -241,7 +241,7 @@ export function smartBasket({ budget, diet }: { budget: number; diet: BasketDiet
 export function recommended(): Product[] {
   const { lines, orders } = appStore.get();
   const seedCats = new Set(
-    lines.map((l) => getProduct(l.productId)?.category).filter((p): p is Product => Boolean(p)) as string[],
+    lines.map((l) => getProduct(l.productId)?.category).filter(Boolean) as string[],
   );
   const inCart = new Set(lines.map((l) => l.productId));
   const pool = allProducts().filter((p) => !inCart.has(p.id));
