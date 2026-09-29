@@ -259,7 +259,7 @@ export function buyItAgain(): Product[] {
   if (fromHistory.length) return fromHistory.slice(0, 12);
   return ["milk", "eggs", "bread", "banana", "curd", "tea", "atta", "onion"]
     .map((t) => searchProducts(t)[0])
-    .filter(Boolean)
+    .filter((p): p is Product => Boolean(p))
     .slice(0, 8);
 }
 

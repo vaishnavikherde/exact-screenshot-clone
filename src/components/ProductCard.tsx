@@ -23,7 +23,7 @@ export function ProductArt({
       aria-hidden="true"
       className={cn(
         "grid place-items-center rounded-2xl transition-transform duration-300 group-hover:scale-105",
-        TINTS[product.tint] ?? TINTS.stone,
+        TINTS[product.tint] ?? TINTS["stone"],
         className,
       )}
     >
