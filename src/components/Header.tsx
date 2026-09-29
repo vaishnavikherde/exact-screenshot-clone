@@ -169,7 +169,7 @@ function LocationModal({ currentPin }: { currentPin: string }) {
           <button
             type="button"
             onClick={() => {
-              if (value.length !== 6) return toast.error("Enter a 6-digit pin code");
+              if (value.length !== 6) { toast.error("Enter a 6-digit pin code"); return; }
               setPin(value);
               setLocationOpen(false);
               toast.success(`Delivering to ${value} in 10 mins`);
@@ -232,7 +232,7 @@ function AuthModal() {
             <button
               type="button"
               onClick={() => {
-                if (otp !== "1234") return toast.error("Invalid code — try 1234");
+                if (otp !== "1234") { toast.error("Invalid code — try 1234"); return; }
                 login(phone);
                 setAuthOpen(false);
                 setStep("phone");

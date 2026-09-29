@@ -63,14 +63,14 @@ export function AIAssistant() {
 
   const listen = () => {
     const SR =
-      (window as unknown as { webkitSpeechRecognition?: new () => SpeechRecognition; SpeechRecognition?: new () => SpeechRecognition })
+      (window as unknown as { webkitSpeechRecognition?: new () => any; SpeechRecognition?: new () => any })
         .SpeechRecognition ??
-      (window as unknown as { webkitSpeechRecognition?: new () => SpeechRecognition })
+      (window as unknown as { webkitSpeechRecognition?: new () => any })
         .webkitSpeechRecognition;
-    if (!SR) return toast.error("Voice input isn't supported in this browser");
+    if (!SR) { toast.error("Voice input isn't supported in this browser"); return; }
     const rec = new SR();
     rec.lang = "en-IN";
-    rec.onresult = (e: SpeechRecognitionEvent) => send(e.results[0][0].transcript);
+    rec.onresult = (e: any) => send(e.results?.[0]?.[0]?.transcript ?? "");
     rec.onerror = () => toast.error("Didn't catch that — try again");
     rec.start();
     toast("Listening…");
