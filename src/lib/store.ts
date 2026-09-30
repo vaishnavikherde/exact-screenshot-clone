@@ -2,7 +2,7 @@
  * Tiny framework-agnostic pub/sub store with optional localStorage persistence.
  * Kept dependency-free so the logic layer stays portable.
  */
-import { useSyncExternalStore } from "react";
+import { useRef, useSyncExternalStore } from "react";
 
 export type Store<T> = {
   get: () => T;
@@ -50,11 +50,20 @@ export function createStore<T>(initial: T, persistKey?: string): Store<T> {
   };
 }
 
-/** React binding. Server snapshot uses the initial state to avoid hydration drift. */
+/**
+ * React binding. The selection is cached per state snapshot so selectors that
+ * build new objects/arrays don't trigger infinite re-render loops.
+ */
 export function useStore<T, S>(store: Store<T>, selector: (s: T) => S): S {
-  return useSyncExternalStore(
-    store.subscribe,
-    () => selector(store.get()),
-    () => selector(store.get()),
-  );
+  const cache = useRef<{ state: T; value: S } | null>(null);
+  const selRef = useRef(selector);
+  selRef.current = selector;
+  const getSnapshot = () => {
+    const state = store.get();
+    if (cache.current && cache.current.state === state) return cache.current.value;
+    const value = selRef.current(state);
+    cache.current = { state, value };
+    return value;
+  };
+  return useSyncExternalStore(store.subscribe, getSnapshot, getSnapshot);
 }
